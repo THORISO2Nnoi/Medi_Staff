@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const path = require('path');
 const staffController = require('../controllers/staffController');
 
 const router = express.Router();
@@ -7,8 +8,11 @@ const router = express.Router();
 // Multer setup
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    if (file.fieldname === 'profilePic') cb(null, 'uploads/profile_pics');
-    else cb(null, 'uploads/certificates');
+    if (file.fieldname === 'profilePic') {
+      cb(null, path.join(__dirname, '../uploads/profile_pics'));
+    } else {
+      cb(null, path.join(__dirname, '../uploads/certificates'));
+    }
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname);
@@ -17,7 +21,15 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Routes
-router.post('/', upload.fields([{ name: 'profilePic', maxCount: 1 }, { name: 'certificates' }]), staffController.addStaff);
+router.post(
+  '/',
+  upload.fields([
+    { name: 'profilePic', maxCount: 1 },
+    { name: 'certificates' }
+  ]),
+  staffController.addStaff
+);
+
 router.get('/', staffController.getStaff);
 
 module.exports = router;

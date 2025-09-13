@@ -13,6 +13,6 @@ const staffSchema = new mongoose.Schema({
   languages: [String],
   profilePic: String,
   certificates: [String]
-}, { timestamps: true, collection: 'StaffMembers' }); // <- explicitly define collection
+}, { timestamps: true, collection: 'StaffMembers' });
 
 module.exports = mongoose.model('StaffMember', staffSchema);
