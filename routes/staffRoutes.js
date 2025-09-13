@@ -8,19 +8,20 @@ const router = express.Router();
 // Multer setup
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    if (file.fieldname === 'profilePic') {
-      cb(null, path.join(__dirname, '../uploads/profile_pics'));
-    } else {
-      cb(null, path.join(__dirname, '../uploads/certificates'));
-    }
+    const dir =
+      file.fieldname === 'profilePic'
+        ? path.join(__dirname, '../uploads/profile_pics')
+        : path.join(__dirname, '../uploads/certificates');
+    cb(null, dir);
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname);
   }
 });
+
 const upload = multer({ storage });
 
-// Routes
+// POST /staff
 router.post(
   '/',
   upload.fields([
@@ -30,6 +31,7 @@ router.post(
   staffController.addStaff
 );
 
+// GET /staff
 router.get('/', staffController.getStaff);
 
 module.exports = router;
